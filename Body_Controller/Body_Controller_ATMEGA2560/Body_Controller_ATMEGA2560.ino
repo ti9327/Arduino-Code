@@ -231,7 +231,7 @@
 //  byte BlueLedSpeed   = 50;   // Multiplied by 10 in ms. (500ms)
 //  byte BarGraphSpeed  = 17;   // Multiplied by 10 in ms. (170ms)
 
-    #define monitorVCC
+    //#define monitorVCC
 
     #define greenVCC 12.5    // Green LED on if above this voltage
     #define yellowVCC 12.0   // Yellow LED on if above this voltage

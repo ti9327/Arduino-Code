@@ -71,11 +71,11 @@
 ///*****          Preferences/Items to change                 *****///
 //////////////////////////////////////////////////////////////////////
  // ESPNOW Password - This must be the same across all devices
-  String ESPNOWPASSWORD = "GregsAstromech";
+  String ESPNOWPASSWORD = "ChooChoosAstromech";
 
   // R2 Control Network Details
-  const char* ssid = "R2D2_Control_Network";
-  const char* password =  "astromech";
+  const char* ssid = "Droid_Control_Network";
+  const char* password =  "Dr01ds@r3Gr3@t";
 
   //Enables status tracking on the LoRa Droid
   bool STATUS_TRACKING = 1;
@@ -613,7 +613,7 @@ void processESPNOWIncomingMessage(){
 
 //     Pin,  Close Pos, Open Pos,  Group ID  (Change the Close and Open to your Droids actual limits)
 const ServoSettings servoSettings[] PROGMEM = {
-    { 27,  2250, 1550, SABER_LAUNCHER },       /* 0: Top Utility Arm 2350,675*/
+    { SABER_LAUNCHER_PIN,  2200, 1600, SABER_LAUNCHER },       /* 0: Top Utility Arm 2350,675*/
     // { 2,  1630, 860, BOTTOM_UTILITY_ARM },    /* 1: Bottom Utility Arm 1950,960*/
     // { 3,  1820, 1000, LARGE_LEFT_DOOR },      /* 2: Right Left Door as viewing from looking at R2 1900,1000*/
     // { 4,  1400, 1900, LARGE_RIGHT_DOOR },      /* 3: Left Right door as viewing from looking at R2 1200,1900*/
@@ -678,6 +678,35 @@ void armSaber(){
     Accessory_Command[0]   = '\0';
 
 }
+
+void recordVideo(){
+  Debug.SERVO("Raising R2CU 360 Camera\n");      
+  sendESPNOWCommand("DC", ":D20108");    
+  DelayCall::schedule([]{cameraExtend();}, 2000);
+
+  Accessory_Command[0]   = '\0';
+}
+
+void stopVideo(){
+  Debug.SERVO("Stowing R2CU 360 Camera\n");   
+  cameraRetract();
+  DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20208");}, 3000);  
+  
+  Accessory_Command[0]   = '\0';
+
+}
+
+void cameraExtend(){
+  digitalWrite(R2CU_UP, HIGH);
+	digitalWrite(R2CU_DOWN, LOW);  
+  Accessory_Command[0]   = '\0';
+};
+
+void cameraRetract(){
+  digitalWrite(R2CU_UP, LOW);
+  digitalWrite(R2CU_DOWN, HIGH);
+   Accessory_Command[0]   = '\0';
+};
 
 void fansOn(){
   digitalWrite(FANS, HIGH);
@@ -1078,6 +1107,12 @@ void setup(){
   pinMode(FANS, OUTPUT);
   pinMode(SMOKE, OUTPUT);
 
+  //R2CU Cell 
+  pinMode(R2CU_UP, OUTPUT);
+  pinMode(R2CU_DOWN, OUTPUT);
+
+  //Ensure Acutator Retracted
+  cameraRetract();
 
   //initialize WiFi for ESP-NOW
   WiFi.mode(WIFI_STA);
@@ -1153,7 +1188,7 @@ void setup(){
   ESP_LED.show();
   colorWipeStatus("ES",red,10);
 
-    strobe_LED.begin();
+  strobe_LED.begin();
   strobe_LED.show();
 
 }   // end of setup
@@ -1349,6 +1384,11 @@ if(Accessory_Command[0]) {
           
           case 60: launchSaber(); break;
           case 61: armSaber(); break;
+
+          case 70: cameraExtend(); break;
+          case 71: cameraRetract(); break;
+          case 72: recordVideo(); break;
+          case 73: stopVideo(); break;
 
           case 98: clearStrobe();break;
           default: Accessory_Command[0] = '\0'; clearStrobe(); break;

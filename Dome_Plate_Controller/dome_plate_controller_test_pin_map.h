@@ -22,10 +22,14 @@
 #define UP_12				12 // W // Unused Pin (must be LOW during boot)
 #define SERIAL_TX_US        13 // Y // Unused Pin
 #define SERIAL_RX_US        14 // Y // Unused Pin
-#define SERIAL1_TX_PIN      15 // Y // Unused Pin (must be HIGH during boot)
-#define SERIAL1_RX_PIN      16 // Y // Unused Pin
-#define STROBE_DATA      18 // Y // Unused Pin
-#define STROBE_CLOCK	   17 // Y // Unused Pin
+//#define SERIAL1_TX_PIN      15 // Y // Unused Pin (must be HIGH during boot)
+//#define SERIAL1_RX_PIN      16 // Y // Unused Pin
+#define STROBE_DATA      15 // Y // Unused Pin (must be HIGH during boot)
+#define STROBE_CLOCK      16 // Y // Unused Pin
+#define R2CU_UP       18 // Y // Unused Pin
+#define R2CU_DOWN	          17 // Y // Unused Pin
+//#define STROBE_DATA      18 // Y // Unused Pin
+//#define STROBE_CLOCK	   17 // Y // Unused Pin
 #define UP_19               19 // Y // Unused Pin
 #define NONEXISTENT_PIN_20  20 // N // There is no GPIO20
 #define I2C_SDA             21 // Y // I2C SDA
@@ -39,8 +43,8 @@
 #define NONEXISTENT_PIN_29  29 // N // There is no GPIO29
 #define NONEXISTENT_PIN_30  30 // N // There is no GPIO30
 #define NONEXISTENT_PIN_31 	31 // N // There is no GPIO31
-#define UP_32			  	32 // Y // Unused Pin
-#define UP_33	 	 	  	33 // Y // Unused Pin
+#define SERIAL1_TX_PIN			  	32 // Y // Unused Pin
+#define SERIAL1_RX_PIN	 	 	  	33 // Y // Unused Pin
 #define UP_34 	            34 // Y // Unused Pin - input only (Can be used for Rx) // Use pull-down resistor
 #define UP_35               35 // Y // Unused Pin - input only (Can be used for Rx) // Use pull-down resistor
 #define UP_36               36 // Y // Unused Pin - input only (Can be used for Rx) // Use pull-down resistor

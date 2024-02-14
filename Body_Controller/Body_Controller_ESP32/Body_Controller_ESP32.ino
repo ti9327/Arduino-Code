@@ -71,11 +71,11 @@
 ///*****       Preferences/Items to change        *****///
 //////////////////////////////////////////////////////////////////////
  //ESPNOW Password - This must be the same across all devices
-  String ESPNOWPASSWORD = "GregsAstromech";  //Must be less than 20 characters
+  String ESPNOWPASSWORD = "ChooChoosAstromech";  //Must be less than 20 characters
 
   ////R2 Control Network Details for OTA only
-  const char* ssid = "R2D2_Control_Network";
-  const char* password =  "astromech";
+  const char* ssid = "Droid_Control_Network";
+  const char* password =  "Dr01ds@r3Gr3@t";
 
     //Enables status tracking on the Droid Gateway
   bool STATUS_TRACKING = 1;
@@ -1243,13 +1243,15 @@ void CompleteshortCircuit(){
   HCR.Overload();
   DelayCall::schedule([]{HCR.Stimulate(3, 1);},1500);
   sendESPNOWCommand("HP", ":HA014");
-  sendESPNOWCommand("DC", ":SDL@APLE20530");
+  // sendESPNOWCommand("DC", ":SDL@APLE20530");
   writeRdSerial(":DPS14");  // #DPS14:H:D90,100:D-90,100:D65,70:D-180,90:D-420,80:A0:D100,50:H,30
-  sendESPNOWCommand("DP", ":SUS:PS14");
+  
 
   DelayCall::schedule([]{sendESPNOWCommand("DC", ":SPS0T4");}, 50);
   DelayCall::schedule([]{sendESPNOWCommand("BS", ":D305");}, 100);
-    DelayCall::schedule([]{sendESPNOWCommand("DP", ":A54");}, 150);
+  DelayCall::schedule([]{sendESPNOWCommand("DP", ":A54");}, 150);
+  DelayCall::schedule([]{sendESPNOWCommand("DC", ":SDL@APLE20530");}, 200);
+  DelayCall::schedule([]{sendESPNOWCommand("DP", ":SUS:PS14");}, 250);
 
   DelayCall::schedule([]{resetLightsafterShortCircuit();}, 18000);
   Animation_Command[0]   = '\0'; 
@@ -1278,11 +1280,6 @@ void allLightsToggle(){
 
 }
 
-
-void drawerWave(){
-  sendESPNOWCommand("BS", ":D118");
-  Animation_Command[0]   = '\0'; 
-};
 
 void OpenClosewithEasing(){
   sendESPNOWCommand("BS", ":D306B312000400000050");
@@ -1329,7 +1326,19 @@ void WaveUtilityArm(){
   Animation_Command[0]   = '\0'; 
 };
 
+void BeginRecording(){
+  writeRdSerial(":DPH");
+  sendESPNOWCommand("DP", ":A72");
+  Animation_Command[0]   = '\0';
+}
+
+void EndRecording(){
+  sendESPNOWCommand("DP", ":A73");
+  Animation_Command[0]   = '\0';
+}
+
 void LaunchSaber(){
+  HCR.PlayWAV(1, 87);
   sendESPNOWCommand("DP", ":A60");
     Animation_Command[0]   = '\0'; 
 }
@@ -1614,11 +1623,7 @@ void RCRadio_Matrix_Buttons(int PWMvalue){
       Serial.println("T5 Left: Wave Utility Arm");
       WaveUtilityArm();
 
-    }
-    if (PWMvalue <= 1449 && PWMvalue >= 1400){
-      Serial.println("T5 Right: Drawer Wave");
-      drawerWave();
-    }    
+    }   
     if (PWMvalue <= 1399 && PWMvalue >= 1350){
       Serial.println("T3 Up: Function 10:  Harlem Shake");
       HarlemShake();
@@ -2198,7 +2203,7 @@ void loop(){
               case 9: toggleDoors();                                        break;
               case 10: allLightsToggle();                                   break;
               case 11: allOpen();                                           break;
-              case 12: drawerWave();                                        break;
+              case 12: break;
               case 13: OpenClosewithEasing();                               break;
               case 14: CompleteshortCircuit();                              break;
               case 15: StarWarsThemeSong();                                 break;
@@ -2212,8 +2217,8 @@ void loop(){
               case 23: ArmSaber();                                          break;
               case 24: LaunchSaber();                                       break;
               case 25: SmokeSequence();                                     break;
-              case 26: break;
-              case 27: break;
+              case 26: BeginRecording();                                    break;
+              case 27: EndRecording();                                      break;
               case 28: break;
               case 29: break;
               case 30: break;
