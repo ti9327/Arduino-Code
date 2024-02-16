@@ -658,8 +658,8 @@ void launchSaber(){
 }
 void armSaber(){
   Debug.SERVO("Armed Light Saber\n");  
-  sendESPNOWCommand("BC", ":R#DPAUTO0");
-  DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20108");}, 50);
+  //sendESPNOWCommand("BC", ":R#DPAUTO0");
+  //DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20108");}, 50);
   DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20109");}, 100);
   DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20110");}, 150);
   // sendESPNOWCommand("DC", ":D20109");      
@@ -668,10 +668,10 @@ void armSaber(){
 
   SEQUENCE_PLAY_ONCE(servoSequencer, SeqPanelAllOpen, SABER_LAUNCHER);
   DelayCall::schedule([]{SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, SABER_LAUNCHER, varSpeedMin, varSpeedMax);}, 7000);
-  DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20208");}, 20000);
+  //DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20208");}, 20000);
   DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20209");}, 20050);
   DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20210");}, 20100);
-  DelayCall::schedule([]{ sendESPNOWCommand("BC", ":R#DPAUTO1");}, 20150);
+  //DelayCall::schedule([]{ sendESPNOWCommand("BC", ":R#DPAUTO1");}, 20150);
 
     // SEQUENCE_PLAY_ONCE(servoSequencer, SeqPanelAllClose, SABER_LAUNCHER);
 

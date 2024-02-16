@@ -1199,7 +1199,7 @@ void HarlemShake(){
   // float currentVolume = HCR.getVolume(1);
   sendESPNOWCommand("BS", ":D313");
   // HCR.SetVolume(1,100);
-  HCR.PlayWAV(1,202);  //Figure out which is the correct track to play
+  HCR.PlayWAV(1,1800);  //Figure out which is the correct track to play
   HCR.update();
   // HCR.SetVolume(1,currentVolume);
  Animation_Command[0]   = '\0'; 
@@ -1280,6 +1280,19 @@ void allLightsToggle(){
 
 }
 
+bool recordOn = false;
+
+void toggleCamera(){
+  if (recordOn) {
+      sendESPNOWCommand("DP", ":A73");
+      recordOn = false;
+  } else {
+      recordOn = true;
+      writeRdSerial(":DPH");
+      sendESPNOWCommand("DP", ":A72");
+  }
+  Animation_Command[0]   = '\0';
+}
 
 void OpenClosewithEasing(){
   sendESPNOWCommand("BS", ":D306B312000400000050");
@@ -2203,7 +2216,7 @@ void loop(){
               case 9: toggleDoors();                                        break;
               case 10: allLightsToggle();                                   break;
               case 11: allOpen();                                           break;
-              case 12: break;
+              case 12: toggleCamera();                                      break;
               case 13: OpenClosewithEasing();                               break;
               case 14: CompleteshortCircuit();                              break;
               case 15: StarWarsThemeSong();                                 break;
