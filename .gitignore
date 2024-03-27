@@ -4,3 +4,5 @@ Arduino-Code.code-workspace
 libraries/Reeltwo/
 .vscode
 AmidalaFirmware/
+Dome_Plate_Controller - Backup/Dome_Plate_Controller.ino
+Dome_Plate_Controller - Backup/dome_plate_controller_test_pin_map.h
