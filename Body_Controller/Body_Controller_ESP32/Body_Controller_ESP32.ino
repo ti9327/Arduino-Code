@@ -1298,6 +1298,19 @@ void toggleCamera(){
   Animation_Command[0]   = '\0';
 }
 
+bool autoDomeOn = false;
+void toggleAutoDome(){
+  if (autoDomeOn){
+    writeRdSerial("#DPAUTO0");
+    autoDomeOn = false;
+  } else{
+    autoDomeOn = true;
+    writeRdSerial("#DPAUTO1");
+  }
+   Animation_Command[0]   = '\0'; 
+
+}
+
 void OpenClosewithEasing(){
   sendESPNOWCommand("BS", ":D306B312000400000050");
   Animation_Command[0]   = '\0'; 
@@ -2036,7 +2049,6 @@ void setup(){
   //Reset Arudino Mega
   resetArduino(500);
 
-
 }  //end of Setup
 
 
@@ -2280,7 +2292,7 @@ void loop(){
               case 25: SmokeSequence();                                     break;
               case 26: BeginRecording();                                    break;
               case 27: EndRecording();                                      break;
-              case 28: break;
+              case 28: toggleAutoDome();                                    break;
               case 29: break;
               case 30: break;
               case 31: break;
