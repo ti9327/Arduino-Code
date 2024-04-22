@@ -253,9 +253,9 @@ IPAddress gateway(192,168,4,101);
 uint8_t newMACAddress[] = {0x02, 0x00, 0xC0, 0xA8, 0x04, 0x65};
 
  ////R2 Control Network Details
-const char* ssid = "R_Remote";                  // Test Network
+const char* ssid = "Droid_Control_Network";                  // Test Network
 // const char* ssid = "R2D2_Control_Network";   
-const char* password =  "astromech";
+const char* password = "Dr01ds@r3Gr3@t";
 int channel =  6;
 int broadcastSSID = 0;  //0 for yes, 1 for no
 int maxConnections = 8;
@@ -637,7 +637,7 @@ if (commandstoReceiveFromRemote.struct_incomingMsgAck == true){
   Debug.STATUS("vu Baseline External: %d\n", BL_vuBaselineExt);
   Debug.STATUS("Droid Battery Voltage: %d\n", BL_BatteryVoltage);
   Debug.STATUS("Droid Battery Percentage: %d\n", BL_BatteryPercentage);
-  Debug.STATUS("Function SW State: %s\n", FunctionSWState);
+  Debug.STATUS("Function SW State: %d\n", FunctionSWState);
   Debug.STATUS("Remote Connected Status: %i\n", remoteConnected);
   Debug.STATUS("DG ESP-NOW Stats: %i / %i \n", DGSuccessCounter, DGFailureCounter);
   Debug.STATUS("BC ESP-NOW Stats: %i / %i \n", BCSuccessCounter, BCFailureCounter);
