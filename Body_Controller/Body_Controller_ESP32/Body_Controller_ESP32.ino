@@ -1203,7 +1203,7 @@ void HarlemShake(){
   // float currentVolume = HCR.getVolume(1);
   sendESPNOWCommand("BS", ":D313");
   // HCR.SetVolume(1,100);
-  HCR.PlayWAV(1,1800);  //Figure out which is the correct track to play
+  HCR.PlayWAV(1,202);  //Figure out which is the correct track to play
   HCR.update();
   // HCR.SetVolume(1,currentVolume);
  Animation_Command[0]   = '\0'; 
