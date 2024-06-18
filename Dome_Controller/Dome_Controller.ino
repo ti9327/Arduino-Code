@@ -597,16 +597,16 @@ void processESPNOWIncomingMessage(){
 
 //     Pin  Min, ,Max,  Group ID  (Change the Min and Max to your Droids actual limits)
 const ServoSettings servoSettings[] PROGMEM = {
-    { 1,   2200,  800, SMALL_PANEL_ONE },       /* 0: door 1 small left door by radar eye */
-    { 2,   2200, 1200, SMALL_PANEL_TWO },       /* 1: door 2 small middle door by radar eye */
-    { 3,   2200, 1150, SMALL_PANEL_THREE },     /* 2: door 3 small right door by radar eye */
+    { 1,    800, 1450, SMALL_PANEL_ONE },       /* 0: door 1 small left door by radar eye */
+    { 2,    800, 1450, SMALL_PANEL_TWO },       /* 1: door 2 small middle door by radar eye */
+    { 3,    920, 1600, SMALL_PANEL_THREE },     /* 2: door 3 small right door by radar eye */
     { 4,    980, 1792, MEDIUM_PANEL_PAINTED },  /* 3: door 4 medium painted door */
     { 5,   1200, 2000, MEDIUM_PANEL_SILVER },   /* 4: door 5 Medium Unpainted door*/
     { 6,   2200, 1000, BIG_PANEL },             /* 5: door 6 Big Lower door */
     { 7,   2200,  800, PIE_PANEL_ONE },         /* 6: door 7 Pie Panel near Periscope */
     { 8,   2200,  800, PIE_PANEL_TWO },         /* 7: door 8 Pie Panel clockwise from Periscope*/
-    { 9,   2363,  900, PIE_PANEL_THREE },       /* 8: door 9 Pie Panel clockwise-2 from Periscope */
-    { 10,  800, 1500, PIE_PANEL_FOUR }          /* 9: door 10 Pie Panel clockwise-3 from Periscope */
+    { 9,    800, 1700, PIE_PANEL_THREE },       /* 8: door 9 Pie Panel clockwise-2 from Periscope */
+    { 10,   800, 1500, PIE_PANEL_FOUR }         /* 9: door 10 Pie Panel clockwise-3 from Periscope */
 };
 
 ServoDispatchPCA9685<SizeOfArray(servoSettings)> servoDispatch(servoSettings);
