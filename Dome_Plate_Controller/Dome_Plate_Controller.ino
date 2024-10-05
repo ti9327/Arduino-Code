@@ -9,7 +9,7 @@
 ///*****                                                                                                        *****///                                                                                                                                                           *****///
 ///*****                                 So exactly what does this all do.....?                                 *****///
 ///*****                       - Receives commands via Serial or ESP-NOW                                        *****///
-///*****                       - Sends Serial commands to the Uppity Spinner and other gadgets                  *****///                                                     *****///
+///*****                       - Sends Serial commands to the Uppity Spinner and other gadgets                  *****/// 
 ///*****                                                                                                        *****///                                                                                                                                                           *****///
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,8 +18,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///*****                            Roam A Dome Home Stored Sequences                                                           *****///
-///*****      [4] H:A170,55:W1:D500,40:W1:D-360:W1:A90:A45:A135:W2:H                                                            *****///
-///*****      [14] :H:L0:P100:A80,60:W1:D-270,90:D90,40:D90,70:D-170,60:W1:D100:D179:D179:D-179:A90:W9:H    Short Circuit       *****///
+///*****      [4] :H:P100:L0:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:DR:WR:H *****///
+///*****     [10] :P100:L0:DR:WR:DR:WR:R40:WR:DR:WR:R-40:W7:DR:WR:DR:WR:DR:WR:R40:WR:DR:WR:R-40:W7:DR:WR:DR:WR:DR:WR:R40:WR:DR:WR:R-40:W7:DR:WR:DR:WR:DR:WR:R40:WR:DR:WR:R-40:W7:DR:WR:DR:WR:DR:WR:R40:WR:DR:WR:R-40:W7:DR:WR *****///
+///*****     [14] :H:L0:P100:A80,60:W1:D-270,90:D90,40:D90,70:D-170,60:W1:D100:D179:D179:D-179:A90:W9:H    Short Circuit       *****///
 ///*****                                                                                                                        *****///
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -613,7 +614,7 @@ void processESPNOWIncomingMessage(){
 
 //     Pin,  Close Pos, Open Pos,  Group ID  (Change the Close and Open to your Droids actual limits)
 const ServoSettings servoSettings[] PROGMEM = {
-    { SABER_LAUNCHER_PIN,  2200, 1600, SABER_LAUNCHER },       /* 0: Top Utility Arm 2350,675*/
+    { SABER_LAUNCHER_PIN,  2200, 1700, SABER_LAUNCHER },       /* 0: Top Utility Arm 2350,675*/
     // { 2,  1630, 860, BOTTOM_UTILITY_ARM },    /* 1: Bottom Utility Arm 1950,960*/
     // { 3,  1820, 1000, LARGE_LEFT_DOOR },      /* 2: Right Left Door as viewing from looking at R2 1900,1000*/
     // { 4,  1400, 1900, LARGE_RIGHT_DOOR },      /* 3: Left Right door as viewing from looking at R2 1200,1900*/

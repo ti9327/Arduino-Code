@@ -232,7 +232,7 @@ bool remoteConnected = false;
  
 HCRVocalizer HCR(&mpSerial,MP_BAUD_RATE); // Serial (Stream Port, baud rate)
 
-// #define SBUS 
+#define SBUS 
 #ifdef SBUS
 /* SBUS object, reading SBUS */
 bfs::SbusRx sbus_rx(&Serial2, SERIAL_RX_SB_PIN, SERIAL_TX_SB_PIN, true, false);
@@ -1255,6 +1255,7 @@ void CompleteshortCircuit(){
   DelayCall::schedule([]{sendESPNOWCommand("BS", ":D305");}, 100);
   DelayCall::schedule([]{sendESPNOWCommand("DP", ":A54");}, 150);
   DelayCall::schedule([]{sendESPNOWCommand("DC", ":SDL@APLE20530");}, 200);
+  DelayCall::schedule([]{sendESPNOWCommand("DC", ":SMPT25");}, 200);
   DelayCall::schedule([]{sendESPNOWCommand("DP", ":SUS:PS14");}, 250);
 
   DelayCall::schedule([]{resetLightsafterShortCircuit();}, 18000);
@@ -1265,6 +1266,7 @@ void CompleteshortCircuit(){
 void resetLightsafterShortCircuit(){
   writeBlSerial("K99");
   sendESPNOWCommand("HP", ":HA0025");
+  sendESPNOWCommand("DC", ":SMPT0");
 }
 
 bool lightsOn = true;
@@ -1385,8 +1387,13 @@ void SmokeSequence(){
 
 void display(){
   sendESPNOWCommand("DP", ":SUS:PP100:L0");
-  sendESPNOWCommand("BS", ":D320");
-    Animation_Command[0]   = '\0'; 
+  //sendESPNOWCommand("BS", ":D320");
+  Animation_Command[0]   = '\0'; 
+}
+
+void PeriscopeHome(){
+  sendESPNOWCommand("DP", ":SUS:PH");
+  Animation_Command[0]   = '\0'; 
 }
 
 void openCloseWave(){
@@ -1689,7 +1696,7 @@ void RCRadio_Matrix_Buttons(int PWMvalue){
     }
     if (PWMvalue <= 1449 && PWMvalue >= 1400){
       Serial.println("T5 Right: Drawer Wave");
-      drawerWave();
+      //drawerWave();
     }    
     if (PWMvalue <= 1399 && PWMvalue >= 1350){
       Serial.println("T3 Up: Function 10:  Harlem Shake");
@@ -2102,6 +2109,7 @@ void loop(){
                 debugInputIdentifier += inCharRead;                   // add it to the inputString:
               }
               debugInputIdentifier.toUpperCase();
+              Serial.println (debugInputIdentifier);
               Debug.toggle(debugInputIdentifier);
               debugInputIdentifier = "";                             // flush the string
               } else if (inputBuffer[1]=='L' || inputBuffer[1]=='l') {
@@ -2293,8 +2301,8 @@ void loop(){
               case 26: BeginRecording();                                    break;
               case 27: EndRecording();                                      break;
               case 28: toggleAutoDome();                                    break;
-              case 29: break;
-              case 30: break;
+              case 29: display();                                           break;
+              case 30: PeriscopeHome();                                     break;
               case 31: break;
               case 32: break;
               case 33: break;

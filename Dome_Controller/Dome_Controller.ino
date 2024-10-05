@@ -82,7 +82,7 @@
   #define HP_BAUD_RATE 9600
   #define DL_BAUD_RATE 9600
   #define PS_BAUD_RATE 9600 //Should be lower than 57600
-  #define SERIAL1_BAUD_RATE 9600  //Should be lower than 57600
+  #define MP_BAUD_RATE 9600  //Should be lower than 57600
 
 
 
@@ -185,7 +185,7 @@
   
   #define hpSerial Serial1
   #define dlSerial Serial2
-  SoftwareSerial s1Serial;
+  SoftwareSerial mpSerial;
   SoftwareSerial psSerial;
 
 
@@ -739,9 +739,9 @@ void psSerialEvent() {
   Debug.SERIAL_EVENT("PSI Serial Input: %s \n",inputString);
 }
 
-void s1SerialEvent() {
-  while (s1Serial.available()) {
-    char inChar = (char)s1Serial.read();
+void mpSerialEvent() {
+  while (mpSerial.available()) {
+    char inChar = (char)mpSerial.read();
     inputString += inChar;
       if (inChar == '\r') {               // if the incoming character is a carriage return (\r)
         stringComplete = true;            // set a flag so the main loop can do something about it.
@@ -779,10 +779,10 @@ void writeHpSerial(String stringData){
   Debug.SERIAL_EVENT("Writing to HP's\n");
 }
 
-void writeS1Serial(String stringData){
+void writeMpSerial(String stringData){
   String completeString = stringData + '\r';
   for (int i=0; i<completeString.length(); i++){
-    s1Serial.write(completeString[i]);
+    mpSerial.write(completeString[i]);
   }
   Debug.SERIAL_EVENT("Writing to Serial 1\n");
 }
@@ -1495,7 +1495,7 @@ void setup(){
   hpSerial.begin(HP_BAUD_RATE,SERIAL_8N1,SERIAL_RX_HP_PIN,SERIAL_TX_HP_PIN);
   dlSerial.begin(DL_BAUD_RATE,SERIAL_8N1,SERIAL_RX_DL_PIN,SERIAL_TX_DL_PIN);
   psSerial.begin(PS_BAUD_RATE,SWSERIAL_8N1,SERIAL_RX_PSI_PIN,SERIAL_TX_PSI_PIN,false,95); 
-  s1Serial.begin(SERIAL1_BAUD_RATE,SWSERIAL_8N1,SERIAL1_RX_PIN,SERIAL1_TX_PIN,false,95);  
+  mpSerial.begin(MP_BAUD_RATE,SWSERIAL_8N1,SERIAL_RX_MP_PIN,SERIAL_TX_MP_PIN,false,95);  
  
   Serial.println("\n\n----------------------------------------");
   Serial.print("Booting up the ");Serial.println(HOSTNAME);
@@ -1614,7 +1614,7 @@ if (millis() - MLMillis >= mainLoopDelayVar){
   if(Serial.available()){serialEvent();}
   if(hpSerial.available()){hpSerialEvent();}
   if(dlSerial.available()){dlSerialEvent();}
-  if(s1Serial.available()){s1SerialEvent();}
+  if(mpSerial.available()){mpSerialEvent();}
 
  RadarEye_LED(blue, 5); // blue
 
@@ -1790,6 +1790,8 @@ if (millis() - MLMillis >= mainLoopDelayVar){
                 writeDlSerial(serialSubStringCommand);
               }  else if (serialPort == "PS"){
                 writePsSerial(serialSubStringCommand);
+              }  else if (serialPort == "MP"){
+                writeMpSerial(serialSubStringCommand);
               } else if (serialPort == "DS"){
                 inputString = serialSubStringCommand;
                 stringComplete = true; 
@@ -1923,3 +1925,4 @@ if (millis() - MLMillis >= mainLoopDelayVar){
     }
   }
 }  //end of main loop
+     
