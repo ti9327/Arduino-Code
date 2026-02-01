@@ -169,7 +169,7 @@
 //////////////////////////////////////////////////////////////////////
 
   #define LDP_PIXELS  32      //32
-  #define MAINT_PIXELS  42    //New to sketch
+  #define MAINT_PIXELS  48    //New to sketch
   #define CS_PIXELS    6      //6
   #define VU_PIXELS    9      //9  
   #define STATUS_PIXELS    1      //9
@@ -233,13 +233,13 @@
 
     #define monitorVCC
 
-    #define greenVCC 12.5    // Green LED on if above this voltage
-    #define yellowVCC 12.0   // Yellow LED on if above this voltage
-    #define redVCC 11.5      // Red LED on if above this voltage
+    #define greenVCC 26.5    // Green LED on if above this voltage
+    #define yellowVCC 24.0   // Yellow LED on if above this voltage
+    #define redVCC 23.5      // Red LED on if above this voltage
     
     // For 15volts: R1=47k, R2=24k
     // For 30volts: R1=47k, R2=9.4k
-    #define R1 57000.0     // >> resistance of R1 in ohms << the more accurate these values are
+    #define R1 100000.0     // >> resistance of R1 in ohms << the more accurate these values are
     #define R2 22000.0     // >> resistance of R2 in ohms << the more accurate the measurement will be
 
     float vout = 0.0;       // for voltage out measured analog input
@@ -258,8 +258,8 @@
 //////////////////////////////////////////////////////////////////////
 ///*****              Battery Voltage Range Config            *****///
 //////////////////////////////////////////////////////////////////////
-   int BatLevMax  = 2280;       // Voltage (X100) when Battery is considered full
-   int BatLevMin  = 1330;       // Voltage (X100) when Battery is considered empty
+   int BatLevMax  = 2660;       // Voltage (X100) when Battery is considered full
+   int BatLevMin  = 1200;       // Voltage (X100) when Battery is considered empty
 
 
 

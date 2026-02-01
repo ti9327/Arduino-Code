@@ -62,11 +62,11 @@
 ///*****          Preferences/Items to change                 *****///
 //////////////////////////////////////////////////////////////////////
  // ESPNOW Password - This must be the same across all devices
-  String ESPNOWPASSWORD = "GregsAstromech";
+  String ESPNOWPASSWORD = "ChooChoosAstromech";
 
   // R2 Control Network Details for OTA
-  const char* ssid = "R2D2_Control_Network";
-  const char* password =  "astromech";
+  const char* ssid = "Droid_Control_Network";
+  const char* password =  "Dr01ds@r3Gr3@t";
 
   //Enables status tracking on the LoRa Droid
   bool STATUS_TRACKING = 1;
@@ -584,23 +584,18 @@ void processESPNOWIncomingMessage(){
 #define LARGE_RIGHT_DOOR      0x0008 //b0000000000001000
 #define CHARGE_BAY_DOOR       0x0010 //b0000000000010000
 #define DATA_PANEL_DOOR       0x0020 //b0000000000100000
-#define DRAWER_S1             0X0040 //b0000000001000000
-#define DRAWER_S2             0x0080 //b0000000010000000
-#define DRAWER_S3             0x0100 //b0000000100000000
-#define DRAWER_S4             0x0200 //b0000001000000000
-#define REAR_LEFT_DOOR        0x0400 //b0000010000000000
-#define REAR_RIGHT_DOOR       0x0800 //b0000100000000000
-#define CPU_ARM_RAISE         0x1000 //b0001000000000000
-#define CPU_ARM_ROTATE        0x2000 //b0010000000000000
-#define CPU_ARM_EXTEND        0x4000 //b0100000000000000
-#define FUTURE                0x8000 //b0100000000000000
+#define REAR_LEFT_DOOR        0X0040 //b0000000001000000
+#define REAR_RIGHT_DOOR       0x0080 //b0000000010000000
+#define CPU_ARM_RAISE         0x0100 //b0000000100000000
+#define CPU_ARM_ROTATE        0x0200 //b0000001000000000
+#define CPU_ARM_EXTEND        0x0400 //b0000010000000000
+#define FUTURE                0x0800 //b0000100000000000
 
 #define UTILITY_ARMS_MASK     (TOP_UTILITY_ARM|BOTTOM_UTILITY_ARM)
-#define LARGE_DOORS_MASK      (LARGE_LEFT_DOOR|LARGE_RIGHT_DOOR)
+#define LARGE_DOORS_MASK      (LARGE_LEFT_DOOR|LARGE_RIGHT_DOOR|REAR_LEFT_DOOR|REAR_RIGHT_DOOR)
 #define SMALL_DOORS_MASK      (CHARGE_BAY_DOOR|DATA_PANEL_DOOR)
-#define DRAWERS_MASK          (DRAWER_S1|DRAWER_S2|DRAWER_S3|DRAWER_S4)
 #define CPU_SERVOS_MASK       (CPU_ARM_RAISE|CPU_ARM_ROTATE|CPU_ARM_EXTEND)
-#define ALL_DOORS_MASK        (LARGE_DOORS_MASK|SMALL_DOORS_MASK|DRAWERS_MASK)
+#define ALL_DOORS_MASK        (LARGE_DOORS_MASK|SMALL_DOORS_MASK)
 #define ALL_SERVOS_MASK       (ALL_DOORS_MASK|UTILITY_ARMS_MASK)
 
 // Group ID is used by the ServoSequencer and some ServoDispatch functions to
@@ -608,22 +603,22 @@ void processESPNOWIncomingMessage(){
 
 //     Pin,  Close Pos, Open Pos,  Group ID  (Change the Close and Open to your Droids actual limits)
 const ServoSettings servoSettings[] PROGMEM = {
-    { 1,  2110, 1100, TOP_UTILITY_ARM },      /* 0: Top Utility Arm 2350,675*/
-    { 2,  1800, 900, BOTTOM_UTILITY_ARM },    /* 1: Bottom Utility Arm 1950,960*/
-    { 3,  1000, 1750, LARGE_LEFT_DOOR },      /* 2: Right Left Door as viewing from looking at R2 1900,1000*/
-    { 4,  1850, 1400, LARGE_RIGHT_DOOR },     /* 3: Left Right door as viewing from looking at R2 1200,1900*/
-    { 5,  758 , 1590, CHARGE_BAY_DOOR },      /* 4: Charge Bay Inidicator Door 1900,758*/
-    { 6,  1750, 850, DATA_PANEL_DOOR },       /* 5: Data Panel Door 700,1400*/
-    { 7,  1950, 700, DRAWER_S1 },             /* 6: Drawer S1*/
-    { 8,  2245, 700, DRAWER_S2 },             /* 7: Drawer S2 */
-    { 9,  650, 2300, DRAWER_S3 },             /* 8: Drawer S3*/
-    { 10,  1300, 2500, DRAWER_S4 },           /* 9: Drawer S4*/
-    { 11,  1870, 500, CPU_ARM_RAISE },        /* 10: CPU Arm Raise/Lower */
-    { 12,  700, 2300, CPU_ARM_ROTATE },       /* 11: CPU Arm Rotate */
-    { 13,  1050, 2450, CPU_ARM_EXTEND },      /* 12: CPU Arm Extend */
-    { 14,  1500, 1549, REAR_LEFT_DOOR },      /* 13: Data Panel Door */
-    { 15,  1500, 1549, REAR_RIGHT_DOOR },     /* 14: Data Panel Door */
-    { 16,  1500, 1549, FUTURE }               /* 15: FUTURE */
+    { 1,  2250, 1000, TOP_UTILITY_ARM },      /*  0: Top Utility Arm */
+    { 2,  2200, 1000, BOTTOM_UTILITY_ARM },   /*  1: Bottom Utility Arm */
+    { 3,  2300,  859, LARGE_LEFT_DOOR },      /*  2: Large Left door as viewing from looking at R2 */
+    { 4,   900, 2250, LARGE_RIGHT_DOOR },     /*  3: Large Right Door as viewing from looking at R2 */    
+    { 5,  2400, 1700, CHARGE_BAY_DOOR },      /*  4: Charge Bay Inidicator Door*/
+    { 6,   600, 1310, DATA_PANEL_DOOR },      /*  5: Data Panel Door */
+    { 7,  2200,  920, CPU_ARM_RAISE },        /*  6: CPU Arm Raise/Lower */
+    { 8,   700, 2300, CPU_ARM_ROTATE },       /*  7: CPU Arm Rotate */
+    { 9,  1212, 2200, CPU_ARM_EXTEND },       /*  8: CPU Arm Extend */
+    { 10, 2200, 1100, REAR_LEFT_DOOR },       /*  9: Large Left Rear Door */
+    { 11,  850, 1500, REAR_RIGHT_DOOR },      /* 10: Large Right Rear Door */
+    { 12, 1500, 1549, FUTURE },               /* 11: FUTURE */
+    { 13, 1500, 1549, FUTURE },               /* 12: FUTURE */
+    { 14, 1500, 1549, FUTURE },               /* 13: FUTURE */
+    { 15, 1500, 1549, FUTURE },               /* 14: FUTURE */
+    { 16, 1500, 1549, FUTURE }                /* 15: FUTURE */
   };
 
 ServoDispatchPCA9685<SizeOfArray(servoSettings)> servoDispatch(servoSettings);
@@ -881,10 +876,8 @@ void openDoor(int servoBoard, int doorpos, int servoEasingMethod, uint32_t varSp
       case 4: Debug.SERVO("Open Large Right Door\n");           SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, LARGE_RIGHT_DOOR, varSpeedMin, varSpeedMax);     break;
       case 5: Debug.SERVO("Open Charge Bay Indicator Door\n"); turnOnCBI(); SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, CHARGE_BAY_DOOR, varSpeedMin, varSpeedMax);      break;
       case 6: Debug.SERVO("Open Data Panel Door\n"); turnOnDataPanel();           SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, DATA_PANEL_DOOR, varSpeedMin, varSpeedMax);      break;
-      case 7: Debug.SERVO("Open Drawer S-1\n");                 SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, DRAWER_S1, varSpeedMin, varSpeedMax);            break;
-      case 8: Debug.SERVO("Open Drawer S-1\n");                 SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, DRAWER_S2, varSpeedMin, varSpeedMax);            break;
-      case 9: Debug.SERVO("Open Drawer S-1\n");                 SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, DRAWER_S3, varSpeedMin, varSpeedMax);            break;
-      case 10: Debug.SERVO("Open Drawer S-1\n");                SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, DRAWER_S4, varSpeedMin, varSpeedMax);            break;
+      case 10: Debug.SERVO("Open Rear Large Left Door\n");            SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, REAR_LEFT_DOOR, varSpeedMin, varSpeedMax);      break;
+      case 11: Debug.SERVO("Open Rear Large Right Door\n");           SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, REAR_RIGHT_DOOR, varSpeedMin, varSpeedMax);     break;
     }
   };
   if (servoBoard == 2 || servoBoard == 3 || servoBoard == 4){
@@ -936,10 +929,8 @@ void closeDoor(int servoBoard, int doorpos, int servoEasingMethod, uint32_t varS
       case 4: Debug.SERVO("Close Large Right Door\n");          SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, LARGE_RIGHT_DOOR, varSpeedMin, varSpeedMax);      break;
       case 5: Debug.SERVO("Close Charge Bay Indicator Door\n"); turnOffCBI();  SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, CHARGE_BAY_DOOR, varSpeedMin, varSpeedMax);       break;
       case 6: Debug.SERVO("Close Data Panel Door\n");  turnOffDataPanel();         SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, DATA_PANEL_DOOR, varSpeedMin, varSpeedMax);       break;
-      case 7: Debug.SERVO("Close Drawer S-1\n");                 SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, DRAWER_S1, varSpeedMin, varSpeedMax);            break;
-      case 8: Debug.SERVO("Close Drawer S-1\n");                 SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, DRAWER_S2, varSpeedMin, varSpeedMax);            break;
-      case 9: Debug.SERVO("Close Drawer S-1\n");                 SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, DRAWER_S3, varSpeedMin, varSpeedMax);            break;
-      case 10: Debug.SERVO("Close Drawer S-1\n");                SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, DRAWER_S4, varSpeedMin, varSpeedMax);            break;
+      case 10: Debug.SERVO("Close Rear Large Left Door\n");           SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, REAR_LEFT_DOOR, varSpeedMin, varSpeedMax);       break;
+      case 11: Debug.SERVO("Close Rear Large Right Door\n");          SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, REAR_RIGHT_DOOR, varSpeedMin, varSpeedMax);      break;
     }
   };
   if (servoBoard == 2 || servoBoard == 3 || servoBoard == 4){
@@ -1039,16 +1030,6 @@ if (delayCallDuration == 0){delayCallDuration = defaultESPNOWSendDuration;}     
             DelayCall::schedule([] {SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelShortCircuit, ALL_SERVOS_MASK, fVarSpeedMin, fVarSpeedMax);},delayCallDuration);  break;
   }
   // SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelShortCircuit, ALL_SERVOS_MASK, fVarSpeedMin, fVarSpeedMax);
-  D_command[0] = '\0';
-};
-
-void drawerWave(int servoBoard, int servoEasingMethod, uint32_t varSpeedMin, uint32_t varSpeedMax, uint32_t delayCallDuration) {
-  // Command: Dx05
-  // add sequence for this routine.  
-  fVarSpeedMin = varSpeedMin;                                                               // sets Global Variable from the local variable to allow the lambda function to utilize it
-  fVarSpeedMax = varSpeedMax;                                                               // sets Global Variable from the local variable to allow the lambda function to utilize it
-
-  SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelDrawerWave, ALL_SERVOS_MASK, fVarSpeedMin, fVarSpeedMax);
   D_command[0] = '\0';
 };
 
@@ -2032,7 +2013,7 @@ case 1: openDoor(D_command[1],D_command[2],D_command[3],D_command[4],D_command[5
           case 15: panelDance(D_command[1],D_command[3],D_command[4],D_command[5],D_command[6]);            break;
           case 16: longDisco(D_command[1],D_command[3],D_command[4],D_command[5],D_command[6]);             break;
           case 17: longHarlemShake(D_command[1],D_command[3],D_command[4],D_command[5],D_command[6]);       break;
-          case 18: drawerWave(D_command[1],D_command[3],D_command[4],D_command[5],D_command[6]);            break;
+          case 18: break;
           case 19: WaveUtilityArm(D_command[1],D_command[3],D_command[4],D_command[5],D_command[6]);        break;
           case 20: display(D_command[1],D_command[3],D_command[4],D_command[5],D_command[6]);               break;
           case 21: CpuArmRaise(D_command[1],D_command[3],D_command[4],D_command[5],D_command[6]);           break;

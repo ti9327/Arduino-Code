@@ -64,11 +64,11 @@
 ///*****          Preferences/Items to change                 *****///
 //////////////////////////////////////////////////////////////////////
  // ESPNOW Password - This must be the same across all devices
-  String ESPNOWPASSWORD = "GregsAstromech";
+  String ESPNOWPASSWORD = "ChooChoosAstromech";
 
   // R2 Control Network Details for OTA
-  const char* ssid = "R2D2_Control_Network";
-  const char* password =  "astromech";
+  const char* ssid = "Droid_Control_Network";
+  const char* password =  "Dr01ds@r3Gr3@t";
 
   //Enables status tracking on the LoRa Droid
   bool STATUS_TRACKING = 1;
@@ -575,12 +575,12 @@ void processESPNOWIncomingMessage(){
 
 //     Pin  Close Pos, Open Pos,  Group ID  (Change the Close and Open to your Droids actual limits)
 const ServoSettings servoSettings[] PROGMEM = {
-    { 1,   1100, 1800, HOLO_HSERVO },  /* 0: Vertical front holo */
-    { 2,   1000, 1700, HOLO_VSERVO },  /* 1: Horizontal front holo */
-    { 3,   1500, 2100, HOLO_HSERVO },  /* 2: horizontal top holo */
-    { 4,   1200, 1900, HOLO_VSERVO },  /* 3: vertical top holo */
-    { 5,   1850, 1200, HOLO_VSERVO },  /* 4: vertical rear holo */
-    { 6,   1300, 2100, HOLO_HSERVO },  /* 5: horizontal rear holo */
+    { 1,   800, 1400, HOLO_HSERVO },  /* 0: horizontal front holo */
+    { 2,   800, 2000, HOLO_VSERVO },  /* 1: vertical front holo */
+    { 3,   800, 2000, HOLO_HSERVO },  /* 2: horizontal top holo */
+    { 4,   800, 1480, HOLO_VSERVO },  /* 3: vertical top holo */
+    { 5,   900, 1900, HOLO_VSERVO },  /* 4: vertical rear holo */
+    { 6,   800, 2000, HOLO_HSERVO },  /* 5: horizontal rear holo */
   };
 
 ServoDispatchPCA9685<SizeOfArray(servoSettings)> servoDispatch(servoSettings);

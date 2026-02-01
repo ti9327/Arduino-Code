@@ -71,11 +71,11 @@
 ///*****       Preferences/Items to change        *****///
 //////////////////////////////////////////////////////////////////////
  //ESPNOW Password - This must be the same across all devices
-  String ESPNOWPASSWORD = "GregsAstromech";  //Must be less than 20 characters
+  String ESPNOWPASSWORD = "ChooChoosAstromech";  //Must be less than 20 characters
 
   ////R2 Control Network Details for OTA only
-  const char* ssid = "R2D2_Control_Network";
-  const char* password =  "astromech";
+  const char* ssid = "Droid_Control_Network";
+  const char* password =  "Dr01ds@r3Gr3@t";
 
     //Enables status tracking on the Droid Gateway
   bool STATUS_TRACKING = 1;
@@ -1332,6 +1332,7 @@ void WaveUtilityArm(){
 };
 
 void LaunchSaber(){
+  HCR.PlayWAV(1, 87);
   sendESPNOWCommand("DP", ":A60");
     Animation_Command[0]   = '\0'; 
 }
@@ -1662,8 +1663,8 @@ void RCRadio_Matrix_Buttons(int PWMvalue){
 
     }
     if (PWMvalue <= 1449 && PWMvalue >= 1400){
-      Serial.println("T5 Right: Drawer Wave");
-      drawerWave();
+      Serial.println("T5 Right: Air Horm");
+      HCR.PlayWAV(1, 9);
     }    
     if (PWMvalue <= 1399 && PWMvalue >= 1350){
       Serial.println("T3 Up: Function 10:  Harlem Shake");

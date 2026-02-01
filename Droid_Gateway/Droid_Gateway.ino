@@ -63,11 +63,11 @@
 ///*****          Preferences/Items to change                 *****///
 //////////////////////////////////////////////////////////////////////
  // ESPNOW Password - This must be the same across all devices
-  String ESPNOWPASSWORD = "GregsAstromech";
+  String ESPNOWPASSWORD = "ChooChoosAstromech";
 
     // R2 Control Network Details
-  const char* ssid = "R2D2_Control_Network";
-  const char* password =  "astromech";
+  const char* ssid = "Droid_Control_Network";
+  const char* password =  "Dr01ds@r3Gr3@t";
 
   // Keepalive timer to send status messages to the Kill Switch (Droid)
   int keepAliveDuration= 4000;  // 4 seconds

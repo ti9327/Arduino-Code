@@ -73,11 +73,11 @@
 ///*****          Preferences/Items to change                 *****///
 //////////////////////////////////////////////////////////////////////
  // ESPNOW Password - This must be the same across all devices
-  String ESPNOWPASSWORD = "GregsAstromech";
+  String ESPNOWPASSWORD = "ChooChoosAstromech";
 
   // R2 Control Network Details
-  const char* ssid = "R2D2_Control_Network";
-  const char* password =  "astromech";
+  const char* ssid = "Droid_Control_Network";
+  const char* password =  "Dr01ds@r3Gr3@t";
 
   //Enables status tracking on the LoRa Droid
   bool STATUS_TRACKING = 1;
@@ -616,19 +616,8 @@ void processESPNOWIncomingMessage(){
 
 //     Pin,  Close Pos, Open Pos,  Group ID  (Change the Close and Open to your Droids actual limits)
 const ServoSettings servoSettings[] PROGMEM = {
-    { 27,  2250, 1550, SABER_LAUNCHER },       /* 0: Top Utility Arm 2350,675*/
-    { 26,  1500, 1300, EXTINGUISHER},          // Exinginsher
-    // { 2,  1630, 860, BOTTOM_UTILITY_ARM },    /* 1: Bottom Utility Arm 1950,960*/
-    // { 3,  1820, 1000, LARGE_LEFT_DOOR },      /* 2: Right Left Door as viewing from looking at R2 1900,1000*/
-    // { 4,  1400, 1900, LARGE_RIGHT_DOOR },      /* 3: Left Right door as viewing from looking at R2 1200,1900*/
-    // { 5,  1590 , 758, CHARGE_BAY_DOOR },       /* 4: Charge Bay Inidicator Door 1900,758*/
-    // { 6,  780, 1400, DATA_PANEL_DOOR },      /* 5: Data Panel Door 700,1400*/
-    // { 7,  1950, 700, DRAWER_S1 },             /* 5: Data Panel Door 2050,700*/
-    // { 8,  2245, 700, DRAWER_S2 },             /* 5: Data Panel Door 2345, 700*/
-    // { 9,  650, 2300, DRAWER_S3 },             /* 5: Data Panel Door 550,2300*/
-    // { 10,  1300, 2500, DRAWER_S4 },            /* 5: Data Panel Door 1200,2500*/
-    // { 11,  1500, 1549, REAR_LEFT_DOOR },      /* 5: Data Panel Door */
-    // { 12,  1500, 1549, REAR_RIGHT_DOOR }      /* 5: Data Panel Door */
+    { SABER_LAUNCHER_PIN,  2200, 1700, SABER_LAUNCHER },    // Saber Launcher
+    { EXTINGUISHER_PIN,    1500, 1300, EXTINGUISHER },      // Exinginsher
   };
 
 ServoDispatchDirect<SizeOfArray(servoSettings)> servoDispatch(servoSettings);
@@ -685,13 +674,25 @@ void armSaber(){
 
 void fireExtinguisher(){
   Debug.SERVO("Fire off the EXTINGUISHER\n");  
-  sendESPNOWCommand("DC", ":D20104");
+  sendESPNOWCommand("DC", ":D20102");
   DelayCall::schedule([]{SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllOpen, EXTINGUISHER, varSpeedMin, varSpeedMax);}, 100);
   DelayCall::schedule([]{SEQUENCE_PLAY_ONCE_VARSPEED(servoSequencer, SeqPanelAllClose, EXTINGUISHER, varSpeedMin, varSpeedMax);}, 1000);
-  DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20204");}, 1100);
+  DelayCall::schedule([]{ sendESPNOWCommand("DC", ":D20202");}, 1100);
   Accessory_Command[0]   = '\0';
 
 }
+
+void HoloSequece(){
+  sendESPNOWCommand("DC", ":D20108");
+  DelayCall::schedule([]{digitalWrite(SERIAL1_RX_HOLO_TRI, HIGH);}, 2000);
+  DelayCall::schedule([]{writeS1SerialString(";S4:PP100");}, 3000);
+  DelayCall::schedule([]{sendESPNOWCommand("BC", ":M15,1,3");}, 8000);
+
+  DelayCall::schedule([]{writeS1SerialString(";S4:PH");}, 40000);
+  DelayCall::schedule([]{digitalWrite(SERIAL1_RX_HOLO_TRI, LOW);}, 41000);
+  DelayCall::schedule([]{sendESPNOWCommand("DC", ":D20208");}, 45000);
+  Accessory_Command[0]   = '\0';
+};
 
 void fansOn(){
   digitalWrite(FANS, HIGH);
@@ -1075,7 +1076,7 @@ void setup(){
 
   Serial.begin(115200);
   usSerial.begin(US_BAUD_RATE,SERIAL_8N1,SERIAL_RX_US,SERIAL_TX_US);
-  s1Serial.begin(SERIAL1_BAUD_RATE,SERIAL_8N1,SERIAL1_RX_PIN,SERIAL1_TX_PIN);
+  s1Serial.begin(SERIAL1_BAUD_RATE,SERIAL_8N1,UP_32,SERIAL1_TX_HOLO_UP);
 
 
   Serial.println("\n\n----------------------------------------");
@@ -1092,6 +1093,8 @@ void setup(){
   pinMode(FANS, OUTPUT);
   pinMode(SMOKE, OUTPUT);
 
+  //Holo Fan Trigger Relay 
+  pinMode(SERIAL1_RX_HOLO_TRI, OUTPUT);
 
   //initialize WiFi for ESP-NOW
   WiFi.mode(WIFI_STA);
@@ -1365,6 +1368,7 @@ if(Accessory_Command[0]) {
           case 61: armSaber(); break;
 
           case 70: fireExtinguisher(); break;
+          case 71: HoloSequece(); break;
 
           case 98: clearStrobe();break;
           default: Accessory_Command[0] = '\0'; clearStrobe(); break;

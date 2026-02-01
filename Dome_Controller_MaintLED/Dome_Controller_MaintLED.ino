@@ -38,9 +38,10 @@
 
 //Used for Camera  and status LEDs
 #include <Adafruit_NeoPixel.h>
+#include <Adafruit_DotStar.h>                  // Source: https://github.com/adafruit/Adafruit_DotStar
 
 //Used for pin definition
-#include "dome_controller_pin_map.h"
+#include "dome_controller_maintled_pin_map.h"
 
 // Debug Functions  - Using my own library for this
 #include <DebugR2.h>  //  https://github.com/greghulette/Arduino-Code/tree/main/libraries/DebugR2  Put these files in a folder called "DebugR2" in your libraries folder and restart the IDE
@@ -112,12 +113,13 @@
   String ESPNOWTarget;
   String ESPNOWSubStringCommand;
   
-  byte RE_command[6] = {0,0,0,0,0,0};
-
+  uint32_t Accessory_Command[7]  = {0,0,0,0,0,0,0};
+  
+  int accessoryFunction;
   int colorState1;
-  int speedState;
-  int ledFunction;
-
+  int colorState2;
+  int typeState;
+  
   debugClass Debug;
   String debugInputIdentifier ="";
 
@@ -237,12 +239,23 @@
 
   const uint32_t basicColors[9] = {off, red, yellow, green, cyan, blue, magenta, orange, white};
 
-  #define NUM_RADAR_EYE_PIXELS 7
+  #define STROBE_LED_COUNT 24
   #define STATUS_LED_COUNT 1  
   
-  Adafruit_NeoPixel RADAR_EYE_LEDS = Adafruit_NeoPixel(NUM_RADAR_EYE_PIXELS, RADAR_EYE_LED_PIN, NEO_GRB + NEO_KHZ800);
+  Adafruit_DotStar strobe_LED = Adafruit_DotStar(STROBE_LED_COUNT, MAINT_DATA_PIN, MAINT_CLOCK_PIN, DOTSTAR_RBG);
   Adafruit_NeoPixel ESP_LED = Adafruit_NeoPixel(STATUS_LED_COUNT, STATUS_LED_PIN, NEO_GRB + NEO_KHZ800);
 
+  byte Strobe_command[4]  = {0,0,0,0};
+
+  byte defaultPrimaryColorInt     = 5;          //1 Integer color value from list above
+  byte defaultSecondaryColorInt   = 1;          //5 Integer color value from list above
+
+  unsigned long StrobeMillis;
+  unsigned long SCruntimeStrobe;
+
+  byte StrobeFrame;
+
+  long int StrobeCount =0;
 
 ///////////////////////////////////////////////////////////////////////
 ///*****                 Auto Sequence Settings                *****///
@@ -282,6 +295,8 @@
   unsigned int RadarEyeAutoPause;
   unsigned int RadarEyeAutoInt;
   
+  byte MAINT_bright = 150;  //New to Sketch - Default Maintenence Lights setting
+
   //Timers and variables to keep track of during the loop
   unsigned long RE_loopTime; // We keep track of the "time" in this variable.
   unsigned long RadarEyeMillis;
@@ -1312,6 +1327,93 @@ void display(int servoBoard, int servoEasingMethod, uint32_t varSpeedMin, uint32
   }
   D_command[0] = '\0';
 }
+
+void showStrobe() {
+  strobe_LED.show();
+}
+ 
+void solidStrobe(uint32_t c) {
+    for(int i=0;i<STROBE_LED_COUNT;i++) { strobe_LED.setPixelColor(i,c); }
+    strobe_LED.show();
+};
+
+void altColorsStrobe(int type, uint32_t color1,uint32_t color2) {
+  uint32_t c;
+  int interval;
+  if(type<1) {interval = 100;}
+  else {interval = 100*type;}
+  if(StrobeFrame>1) {StrobeFrame=0;}
+  if((millis() - StrobeMillis) > interval) {
+    if(StrobeFrame==1) {c=color2;}
+    else {c=color1;}
+    StrobeFrame++;
+    StrobeMillis=millis();
+    for(int i=0;i<STROBE_LED_COUNT;i++) {
+    strobe_LED.setPixelColor(i,c);
+    }
+    showStrobe();
+  }
+}
+
+void ShortCircuitStrobe(byte type, uint32_t color1, uint32_t color2) {
+  if(StrobeCount==0) {SCruntimeStrobe = millis();}
+  long runelapsed = millis() - SCruntimeStrobe;
+  uint32_t type2Colors[2] = {color1, color2};
+  int pixels[STROBE_LED_COUNT];
+  for (int i=0;i < STROBE_LED_COUNT; i++) {pixels[i] = i;}
+  randomize(pixels,STROBE_LED_COUNT);
+  int interval = 10000/STROBE_LED_COUNT;
+  long elapsed = millis() - StrobeMillis;
+  if(StrobeFrame<STROBE_LED_COUNT) {
+    if(elapsed>=interval) {StrobeFrame++;StrobeMillis=millis();}
+    for (int i=0;i < STROBE_LED_COUNT; i++) {strobe_LED.setPixelColor(i,off);}
+    for (int i=0;i < STROBE_LED_COUNT-StrobeFrame; i++) {
+      if(type == 2) {strobe_LED.setPixelColor(pixels[i],random(255),random(255),random(255));}
+      else {strobe_LED.setPixelColor(pixels[i],type2Colors[random(2)]);}
+  }
+  StrobeCount++;
+  if(runelapsed>=1+StrobeCount) {showStrobe();SCruntimeStrobe = millis();}
+
+  }
+}
+
+void clearStrobe() {
+  if(StrobeFrame>0) {StrobeFrame=1;}
+  if(StrobeFrame==0) {
+    for(int i=0;i<STROBE_LED_COUNT;i++) {
+      strobe_LED.setPixelColor(i,off);
+    }
+    StrobeFrame++;
+    showStrobe();
+  }
+}
+
+void swap (int *a, int *b)
+{
+  int temp = *a;
+  *a = *b;
+  *b = temp;
+}
+
+void randomize ( int arr[], int n )
+{
+  // Use a different seed value so that we don't get same
+  // result each time we run this program
+  srand(millis());
+
+  // Start from the last element and swap one by one. We don't
+  // need to run for the first element that's why i > 0
+  for (int i = n-1; i > 0; i--)
+  {
+    // Pick a random index from 0 to i
+    int j = rand() % (i+1);
+
+    // Swap arr[i] with the element at random index
+    swap(&arr[i], &arr[j]);
+  }
+};
+
+
 //////////////////////////////////////////////////////////////////////
 ///*****        Sets Servo Easing Method                      *****///
 //////////////////////////////////////////////////////////////////////
@@ -1351,85 +1453,6 @@ void setServoEasingMethod(int easingMethod){
     case 31:  servoDispatch.setServosEasingMethod(ALL_SERVOS_MASK, Easing::BounceEaseInOut);       break;
     default:  servoDispatch.setServosEasingMethod(ALL_SERVOS_MASK, Easing::LinearInterpolation); 
               Debug.DBG("No Easing Method Selected\n");                                                  break;
-  }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////                                                                                               /////
-///////                                      Radar eye LED Functions                           /////
-///////                                                                                               /////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void RadarEye_LED(uint32_t color, int RadarEyespeed1){
-  int RadarEyeLow = 1;
-  int RadarEyeHigh = 50;
-
-  RE_currentMillis = millis();
-      RadarEyespeed = map(RadarEyespeed1, 1, 9, 1, 250);
-      if (RE_currentMillis - RE_startMillis >= RadarEyespeed){
-      if(countUp == false){                   // check to see if the boolean flag is false.  If false, starting dimming the LEDs
-      
-          dim=dim - random(RadarEyeLow, RadarEyeHigh);  // set the brightness to current minus a random number between 5 and 40. I think that
-                                              //adding a random causes a less smooth transition which makes it look a little better
-          colorWipe(color, dim);              // Set the LEDs to the color and brightness using the colorWipe function
-          }
-      
-        if(dim <= 10){                        //Check to see if the brightness is at or below 20.  Modifying the "20" will
-                                              //allow the dim variable to go below zero causing the flicker.  The closer you
-                                              //set the "20" to zero, the more flickering will happen. I use half the larger
-                                              //dim random number to allow a small flicker without being too annoying.
-
-           countUp = true;                    // if the dim variable is at or below "20", change the countUp flag to true      
-          }
-        if(countUp == true){                 // check to see if the boolean flag is true.  If true, starting brightening the LEDs
-            dim=dim + random(RadarEyeLow, RadarEyeHigh); // set the brightness to current plus a random number between 5 and 40.  I think that
-                                              //adding a random causes a less smooth transition which makes it look a little better
-            colorWipe(color, dim);           // Set the LEDs to the color and brightness using the colorWheel function
-        }
-          if(dim>=250){                       //Check to see if the brightness is at or above 235.  Modifying the "235" will
-                                               //allow the dim variable to go above 255 causing the flicker.  The closer you
-                                              //set the "235" to 255, the more flickering will happen. I use half the larger
-                                              //dim random number to allow a small flicker without being too annoying.
-            countUp = false;                  // if the dim variable is at or above "235", change the countUp flag to false
-          }
-          RE_startMillis = RE_currentMillis; 
-      }
-      
-  }
-
-  //  Color Changing Function for the Camera Lens LEDs
-void colorWipe(uint32_t c, int brightness) {
-  for(uint16_t i=0; i<NUM_RADAR_EYE_PIXELS; i++) {
-    RADAR_EYE_LEDS.setBrightness(brightness);
-    RADAR_EYE_LEDS.setPixelColor(i, c);
-    RADAR_EYE_LEDS.show();
-  }
-};
-
-void clearRE() {
-  for(uint16_t i=0; i<NUM_RADAR_EYE_PIXELS; i++) {
-    RADAR_EYE_LEDS.setPixelColor(i, off);
-    RADAR_EYE_LEDS.show();
-  }
-};
-
-void REAuto () {
-  if(millis() - RadarEyeAutoTimer >= RadarEyeAutoInt*1000) {       // and the timer has reached the set interval
-    if(millis() - RadarEyeAutoTimer >= (RadarEyeAutoInt+RadarEyeAutoPause)*1000) {     // Assign a random command string from the Auto Command Array to the input string
-      if(!autoComplete) {
-        RadarEyeAutoTimer = millis();
-        RadarEyeAutoPause = random(RadarEyeAutoPauseMin,RadarEyeAutoPauseMax);
-        RadarEyeAutoInt = random(RadarEyeAutoIntMin,RadarEyeAutoIntMax);
-        autoInputString = RadarEyeAutoCommands[random((RadarEyeAutoCommandsCount-1))];
-        autoComplete = true;
-      }
-    }
-    else {
-      RE_command[0] = 99;
-    }                                                             // and set flag so new command is processes at beginning of loop
   }
 }
 
@@ -1528,9 +1551,9 @@ void setup(){
   autoInputString.reserve(100);
 
   //Initialize the NeoPixel ring for the camera lens/radar eye
-  RADAR_EYE_LEDS.begin();
-  RADAR_EYE_LEDS.show(); // Initialize all pixels to 'off'
-  colorWipe(red, 255); // red during bootup
+  strobe_LED.begin();
+  strobe_LED.setBrightness(MAINT_bright);
+  strobe_LED.show(); // Initialize all pixels to 'off'
 
   ESP_LED.begin();
   ESP_LED.show();
@@ -1624,9 +1647,6 @@ if (millis() - MLMillis >= mainLoopDelayVar){
       colorWipeStatus("ES",blue,10);
       delay(100);
       sendESPNOWCommand("HP", ":HA199");
-      // (writeHpSerial(:H:A199))
-      // RadarEye_LED(basicColors[5], 5);
-      
 
   }
   keepAlive();
@@ -1634,8 +1654,6 @@ if (millis() - MLMillis >= mainLoopDelayVar){
   if(hpSerial.available()){hpSerialEvent();}
   if(dlSerial.available()){dlSerialEvent();}
   if(mpSerial.available()){mpSerialEvent();}
-
- RadarEye_LED(blue, 5); // blue
 
   if (stringComplete) {autoComplete=false;}
   if (stringComplete || autoComplete) {
@@ -1697,10 +1715,10 @@ if (millis() - MLMillis >= mainLoopDelayVar){
      
           if( inputBuffer[1]=='D' ||        // Door Designator
           inputBuffer[1]=='d' ||        // Door Designator
-          inputBuffer[1]=='R' ||        // Radar Eye LED
-          inputBuffer[1]=='r' ||        // Radar Eye LED
+          inputBuffer[1]=='A' ||        // Radar Eye LED
+          inputBuffer[1]=='a' ||        // Radar Eye LED
           inputBuffer[1]=='E' ||        // Command designator for ESP-NOW functions
-          inputBuffer[1]=='E' ||        // Command designator for ESP-NOW functions
+          inputBuffer[1]=='e' ||        // Command designator for ESP-NOW functions
           inputBuffer[1]=='S' ||        // Command for sending Serial Strings out Serial ports
           inputBuffer[1]=='s'           // Command for sending Serial Strings out Serial ports
 
@@ -1817,14 +1835,7 @@ if (millis() - MLMillis >= mainLoopDelayVar){
               }
               serialStringCommand = "";
               serialPort = "";
-            }   
-            if(inputBuffer[1]=='R' || inputBuffer[1]=='r') {
-              ledFunction = (inputBuffer[2]-'0')*10+(inputBuffer[3]-'0');
-              colorState1 = (inputBuffer[4]-'0');
-              speedState = (inputBuffer[5]-'0');
-              }              
-
-
+            }              
 
             if(inputBuffer[1]=='D' || inputBuffer[1]=='d') {
               D_command[0]   = '\0';                                                            // Flushes Array
@@ -1842,14 +1853,16 @@ if (millis() - MLMillis >= mainLoopDelayVar){
               Debug.LOOP("DelayCall Duration: %d\n",delayCallTime);
             }
 
-            if(inputBuffer[1]=='R' || inputBuffer[1]=='r'){
-              RE_command[0]   = '\0';                                                            // Flushes Array
-              RE_command[0] = ledFunction;
-              RE_command[1] = colorState1;
-              RE_command[2] = speedState;
-              if(!autoComplete) {enableRadarEyeAuto = 0; }                                            //  Disables Automode to keep it from overriding User selected commands
-              Debug.LOOP(" LED Function:%d, ColorState:%d, Color(Dec):%d, Speed:%d\n",ledFunction, colorState1, basicColors[colorState1], speedState);
-              Debug.LOOP(" LED Function:%d, ColorState:%d, Color(Dec):%d, Speed:%d\n",RE_command[0], RE_command[1], basicColors[RE_command[1]], RE_command[2]);
+            if(inputBuffer[1]=='A' || inputBuffer[1]=='a') {
+              Accessory_Command[0]   = '\0';                                                            // Flushes Array
+              Accessory_Command[0] = accessoryFunction;
+              Accessory_Command[1] = typeState;
+              Accessory_Command[2] = colorState1;
+              Accessory_Command[3] = colorState2;
+              StrobeMillis = millis();
+              StrobeFrame = 0;
+              StrobeCount = 0;
+
             }
                 
           }
@@ -1864,9 +1877,10 @@ if (millis() - MLMillis >= mainLoopDelayVar){
         // reset Local ESP Command Variables
 
         // reset Camera Variables
-        int ledFunction;
-        int speedState;
+        int typeState;
+        int accessoryFunction;
         int colorState1;
+        int colorState2;
         
         // reset Door Variables
         int door = -1;
@@ -1876,8 +1890,6 @@ if (millis() - MLMillis >= mainLoopDelayVar){
         uint32_t cVarSpeedMin;
         uint32_t cVarSpeedMax;
         uint32_t delayCallTime;
-
-         
     
         Debug.DBG("command taken\n");
   }
@@ -1916,28 +1928,35 @@ if (millis() - MLMillis >= mainLoopDelayVar){
       }
     }
 
-    if(RE_command[0]){
-      switch(RE_command[0]){
-        case 1: RadarEye_LED(basicColors[RE_command[1]], RE_command[2]);                                   break;
-        case 2: break;  //reserved for future use
-        case 3: break;  //reserved for future use
-        case 96: enableRadarEyeAuto = 0;                                                                      break;     // Disable Auto Mode
-        case 97: enableRadarEyeAuto = 1;                                                                      break;     // Enables Auto Mode
-        case 98:  RE_command[0] = '\0'; 
-                  enableRadarEyeAuto = 0;                                                                     
-                  clearRE();break;
-        case 99:  RE_command[0] = '\0'; 
-          enableRadarEyeAuto = 1;  
-                  clearRE();
-                                                                                   break;
-      }
-    }
+    if(Accessory_Command[0]) {
 
+        switch (Accessory_Command[0]) {
+          case 6: altColorsStrobe(Accessory_Command[1], basicColors[Accessory_Command[2]], basicColors[Accessory_Command[3]]); break;
+          case 14: ShortCircuitStrobe(Accessory_Command[1], basicColors[Accessory_Command[2]], basicColors[Accessory_Command[3]]); break;
+          case 15: solidStrobe(basicColors[Accessory_Command[2]]); break;
+          
+          case 50:  break;
+          case 51:  break;
+          case 52:  break;
+          case 53:  break;
+          case 54:  break;
+          case 55:  break;
+          case 56:  break;
+          
+          case 60:  break;
+          case 61:  break;
 
-      if(!stringComplete && inputString) {
-          if(enableRadarEyeAuto == 1) {REAuto();}
-      
+          case 70: break;
+          case 71:  break;
+          case 72:  break;
+          case 73:  break;
+          case 74:  break;
+
+          case 98: clearStrobe();break;
+          default: Accessory_Command[0] = '\0'; clearStrobe(); break;
         }
+      }
+
     if(isStartUp) {
       isStartUp = false;
       delay(500);
