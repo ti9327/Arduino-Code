@@ -91,7 +91,7 @@
 
     // Serial Baud Rates
   #define US_BAUD_RATE 9600
-  #define SERIAL1_BAUD_RATE 115200 
+  #define SERIAL1_BAUD_RATE 9600 
   #define SERIAL2_BAUD_RATE 9600  //Should be lower than 57600
 
 
@@ -686,11 +686,11 @@ void HoloSequece(){
   sendESPNOWCommand("DC", ":D20108");
   DelayCall::schedule([]{digitalWrite(SERIAL1_RX_HOLO_TRI, HIGH);}, 2000);
   DelayCall::schedule([]{writeS1SerialString(":PP100");}, 3000);
-  DelayCall::schedule([]{sendESPNOWCommand("BC", ":M15,1,3");}, 8000);
+  DelayCall::schedule([]{sendESPNOWCommand("BC", ":M15,1,3");}, 8500);
 
   DelayCall::schedule([]{writeS1SerialString(":PH");}, 40000);
-  DelayCall::schedule([]{digitalWrite(SERIAL1_RX_HOLO_TRI, LOW);}, 41000);
-  DelayCall::schedule([]{sendESPNOWCommand("DC", ":D20208");}, 45000);
+  DelayCall::schedule([]{digitalWrite(SERIAL1_RX_HOLO_TRI, LOW);}, 45000);
+  DelayCall::schedule([]{sendESPNOWCommand("DC", ":D20208");}, 49000);
   Accessory_Command[0]   = '\0';
 };
 
