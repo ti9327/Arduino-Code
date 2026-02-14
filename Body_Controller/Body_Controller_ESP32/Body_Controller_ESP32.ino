@@ -1407,6 +1407,11 @@ void fireExinguisher(){
       Animation_Command[0]   = '\0'; 
 }
 
+void holoSequence(){
+  sendESPNOWCommand("DP", ":A71");
+      Animation_Command[0]   = '\0'; 
+}
+
 #ifdef SBUS
 
 
@@ -1777,10 +1782,11 @@ void RCRadio_Matrix_Buttons(int PWMvalue){
       longDance();
     }
     if (PWMvalue <= 1099 && PWMvalue >= 1050){
-      Serial.println("T6 Right: Function 16: ");
+      Serial.println("T6 Right: Function 16: Holo Leia");
+      holoSequence();
     }
     if (PWMvalue <= 1049 && PWMvalue >= 1000){
-      Serial.println("T1 Left: Function 17: ");
+      Serial.println("T1 Left: Function 17: Fire Extinguisher");
       fireExinguisher();
     }
     if (PWMvalue <= 899 && PWMvalue >= 850){
